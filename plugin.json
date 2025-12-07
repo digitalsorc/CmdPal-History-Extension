@@ -1,13 +1,21 @@
 {
-  "ID": "CmdPalHistoryExtension",
-  "Name": "Command History",
-  "Author": "CmdPal History Extension",
-  "Version": "1.0.0",
-  "Language": "csharp",
-  "Website": "https://github.com/digitalsorc/CmdPal-History-Extension",
-  "ExecuteFileName": "CmdPalHistoryExtension.dll",
-  "IcoPath": "Images\\icon.png",
-  "Description": "Browse and search through your command history with customizable keyboard shortcuts",
-  "ActionKeyword": "history",
-  "DynamicLoading": false
+  "id": "cmdpal-history-extension",
+  "name": "Command History",
+  "author": "CmdPal History Extension Team",
+  "version": "1.0.0",
+  "description": "Browse and search through your command history with keyboard navigation",
+  "extensionType": "command",
+  "activationKeyword": "history",
+  "executable": "CmdPalHistoryExtension.exe",
+  "clsid": "{12345678-1234-1234-1234-123456789012}",
+  "icon": "Images/icon.png",
+  "permissions": [
+    "clipboard",
+    "storage"
+  ],
+  "minCmdPalVersion": "1.0.0",
+  "supportedPlatforms": [
+    "win-x64",
+    "win-arm64"
+  ]
 }
