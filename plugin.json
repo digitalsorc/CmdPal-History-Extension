@@ -1,0 +1,13 @@
+{
+  "ID": "CmdPalHistoryExtension",
+  "Name": "Command History",
+  "Author": "CmdPal History Extension",
+  "Version": "1.0.0",
+  "Language": "csharp",
+  "Website": "https://github.com/digitalsorc/CmdPal-History-Extension",
+  "ExecuteFileName": "CmdPalHistoryExtension.dll",
+  "IcoPath": "Images\\icon.png",
+  "Description": "Browse and search through your command history with customizable keyboard shortcuts",
+  "ActionKeyword": "history",
+  "DynamicLoading": false
+}

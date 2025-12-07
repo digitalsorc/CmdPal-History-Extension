@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "keybindings": {
+    "previousCommand": "Up",
+    "nextCommand": "Down",
+    "openHistoryList": "Ctrl+H"
+  },
+  "storage": {
+    "maxHistoryEntries": 10000,
+    "persistenceType": "sqlite",
+    "databasePath": "%USERPROFILE%\\.cmdpal\\history.db"
+  },
+  "ui": {
+    "showTimestamps": true,
+    "itemsPerPage": 50,
+    "theme": "auto"
+  },
+  "behavior": {
+    "deduplicateEntries": true,
+    "caseSensitiveSearch": false,
+    "autoSaveInterval": 60
+  }
+}
