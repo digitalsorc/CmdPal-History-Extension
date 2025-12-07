@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using Xunit;
 using CmdPalHistoryExtension.Services;
 using CmdPalHistoryExtension.Models;
@@ -57,9 +58,9 @@ namespace CmdPalHistoryExtension.Tests
         {
             // Arrange
             _historyManager.AddCommand("first");
-            System.Threading.Thread.Sleep(10); // Ensure different timestamps
+            Thread.Sleep(10); // Ensure different timestamps
             _historyManager.AddCommand("second");
-            System.Threading.Thread.Sleep(10);
+            Thread.Sleep(10);
             _historyManager.AddCommand("third");
 
             // Act
@@ -168,7 +169,7 @@ namespace CmdPalHistoryExtension.Tests
             _historyManager?.Dispose();
             
             // Step 2: Small delay to ensure OS releases file locks
-            System.Threading.Thread.Sleep(DisposalDelayMs);
+            Thread.Sleep(DisposalDelayMs);
             
             // Step 3: Delete the temporary database files with retry logic
             TryDeleteFile(_testDbPath);
@@ -191,12 +192,12 @@ namespace CmdPalHistoryExtension.Tests
                 }
                 catch (IOException) when (i < MaxRetries - 1)
                 {
-                    System.Threading.Thread.Sleep(delay);
+                    Thread.Sleep(delay);
                     delay *= 2; // Exponential backoff
                 }
                 catch (UnauthorizedAccessException) when (i < MaxRetries - 1)
                 {
-                    System.Threading.Thread.Sleep(delay);
+                    Thread.Sleep(delay);
                     delay *= 2; // Exponential backoff
                 }
                 catch
