@@ -1,3 +1,13 @@
+# GitHub Actions workflow for CmdPal History Extension
+# 
+# This workflow automatically:
+# - Builds the C# project on every push and pull request to the main branch
+# - Runs tests (continues even if tests fail, as they require Windows Desktop runtime)
+# - Publishes the resulting DLL and all dependencies as workflow artifacts called "binaries"
+# - On tagged releases, creates a ZIP package and uploads it to the GitHub Release
+#
+# To use with a different branch, change the branch name in the "on" section below.
+
 name: Build and Publish
 
 on:
@@ -26,6 +36,9 @@ jobs:
 
     - name: Build
       run: dotnet build CmdPalHistoryExtension.csproj --configuration Release --no-restore
+
+    - name: Build Tests
+      run: dotnet build CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj --configuration Release --no-restore
 
     - name: Test
       run: dotnet test CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj --configuration Release --no-build --verbosity normal
