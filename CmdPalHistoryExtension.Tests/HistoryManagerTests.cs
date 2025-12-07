@@ -12,6 +12,7 @@ namespace CmdPalHistoryExtension.Tests
         private const int DisposalDelayMs = 100;
         private const int MaxRetries = 3;
         private const int InitialRetryDelayMs = 50;
+        private const string LimitedDbSuffix = "_limited";
         
         private readonly string _testDbPath;
         private readonly HistoryManager _historyManager;
@@ -137,7 +138,7 @@ namespace CmdPalHistoryExtension.Tests
         public void AddCommand_WithMaxEntries_ShouldRemoveOldestEntries()
         {
             // Arrange
-            using var limitedManager = new HistoryManager(_testDbPath + "_limited", maxEntries: 3);
+            using var limitedManager = new HistoryManager(_testDbPath + LimitedDbSuffix, maxEntries: 3);
 
             // Act
             limitedManager.AddCommand("cmd1");
@@ -173,7 +174,7 @@ namespace CmdPalHistoryExtension.Tests
             
             // Step 3: Delete the temporary database files with retry logic
             TryDeleteFile(_testDbPath);
-            TryDeleteFile(_testDbPath + "_limited");
+            TryDeleteFile(_testDbPath + LimitedDbSuffix);
         }
 
         private static void TryDeleteFile(string filePath)
