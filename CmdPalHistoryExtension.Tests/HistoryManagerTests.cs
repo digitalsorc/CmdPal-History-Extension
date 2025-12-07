@@ -8,6 +8,10 @@ namespace CmdPalHistoryExtension.Tests
 {
     public class HistoryManagerTests : IDisposable
     {
+        private const int DisposalDelayMs = 100;
+        private const int MaxRetries = 3;
+        private const int InitialRetryDelayMs = 50;
+        
         private readonly string _testDbPath;
         private readonly HistoryManager _historyManager;
 
@@ -164,7 +168,7 @@ namespace CmdPalHistoryExtension.Tests
             _historyManager?.Dispose();
             
             // Step 2: Small delay to ensure OS releases file locks
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(DisposalDelayMs);
             
             // Step 3: Delete the temporary database files with retry logic
             TryDeleteFile(_testDbPath);
@@ -176,22 +180,21 @@ namespace CmdPalHistoryExtension.Tests
             if (!File.Exists(filePath))
                 return;
 
-            int maxRetries = 3;
-            int delay = 50;
+            int delay = InitialRetryDelayMs;
             
-            for (int i = 0; i < maxRetries; i++)
+            for (int i = 0; i < MaxRetries; i++)
             {
                 try
                 {
                     File.Delete(filePath);
                     return;
                 }
-                catch (IOException) when (i < maxRetries - 1)
+                catch (IOException) when (i < MaxRetries - 1)
                 {
                     System.Threading.Thread.Sleep(delay);
                     delay *= 2; // Exponential backoff
                 }
-                catch (UnauthorizedAccessException) when (i < maxRetries - 1)
+                catch (UnauthorizedAccessException) when (i < MaxRetries - 1)
                 {
                     System.Threading.Thread.Sleep(delay);
                     delay *= 2; // Exponential backoff
