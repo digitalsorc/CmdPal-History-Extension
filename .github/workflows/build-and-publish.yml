@@ -2,7 +2,7 @@
 # 
 # This workflow automatically:
 # - Builds the C# project on every push and pull request to the main branch
-# - Runs tests (continues even if tests fail, as they require Windows Desktop runtime)
+# - Runs tests using Windows runner (required for Windows Desktop/WPF applications)
 # - Publishes the resulting DLL and all dependencies as workflow artifacts called "binaries"
 # - On tagged releases, creates a ZIP package and uploads it to the GitHub Release
 #
@@ -32,7 +32,9 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore CmdPalHistoryExtension.csproj
+      run: |
+        dotnet restore CmdPalHistoryExtension.csproj
+        dotnet restore CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj
 
     - name: Build
       run: dotnet build CmdPalHistoryExtension.csproj --configuration Release --no-restore
@@ -42,7 +44,6 @@ jobs:
 
     - name: Test
       run: dotnet test CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj --configuration Release --no-build --verbosity normal
-      continue-on-error: true
 
     - name: Publish binaries
       run: dotnet publish CmdPalHistoryExtension.csproj --configuration Release --output ./publish --no-build
@@ -59,7 +60,7 @@ jobs:
       run: |
         $version = "${{ github.ref_name }}"
         $zipName = "CmdPalHistoryExtension-${version}.zip"
-        Compress-Archive -Path ./publish/* -DestinationPath $zipName
+        Compress-Archive -Path './publish/*' -DestinationPath $zipName -Force
         echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
       shell: pwsh
 
