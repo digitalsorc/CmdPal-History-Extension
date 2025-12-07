@@ -2,12 +2,13 @@
 
 ## 🎯 Project Overview
 
-**Name:** CmdPal History Extension for PowerToys  
+**Name:** CmdPal History Extension  
 **Version:** 1.0.0  
 **Status:** ✅ Complete and Production-Ready  
 **Date:** December 7, 2024  
+**Updated:** December 7, 2024 - Converted to CmdPal architecture
 
-A fully functional PowerToys CmdPal extension that implements terminal-style command history browsing with customizable keyboard shortcuts and a searchable UI.
+A fully functional CmdPal extension that implements terminal-style command history browsing with customizable keyboard shortcuts and a searchable UI. Built using the Command Palette Extension SDK.
 
 ## 📦 Deliverables Completed
 
@@ -142,11 +143,13 @@ CmdPalHistoryExtension/
 ### Technology Stack
 
 - **Language:** C# 12 (.NET 8.0)
-- **UI Framework:** WPF (Windows Presentation Foundation)
+- **UI Framework:** CmdPal SDK (IListPage, ICommand interfaces)
+- **Architecture:** COM-based out-of-process extension
 - **Database:** SQLite 3
 - **Testing:** xUnit
 - **Build:** .NET SDK, PowerShell
 - **Configuration:** JSON
+- **Packaging:** MSIX/APPX with Package.appxmanifest
 - **Target:** Windows 10/11 (64-bit)
 
 ## 🏗️ Architecture Highlights
