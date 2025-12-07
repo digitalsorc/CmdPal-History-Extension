@@ -11,8 +11,9 @@ namespace CmdPalHistoryExtension
     /// </summary>
     internal class Program
     {
-        // GUID for the extension - must match the one in Package.appxmanifest
-        private static readonly Guid ExtensionGuid = new Guid("12345678-1234-1234-1234-123456789012");
+        // NOTE: The GUID 12345678-1234-1234-1234-123456789012 used in Package.appxmanifest
+        // is a placeholder and MUST be replaced with a unique GUID before production deployment.
+        // Generate a new GUID with: [guid]::NewGuid() in PowerShell or guidgen.exe
 
         [STAThread]
         static int Main(string[] args)

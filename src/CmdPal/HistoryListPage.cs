@@ -128,14 +128,25 @@ namespace CmdPalHistoryExtension.CmdPal
                 // Add to history again (updates execution count)
                 _historyManager.AddCommand(_entry.Command);
                 
-                // TODO: Actually execute the command if needed
-                // For now, we just copy to clipboard
-                System.Windows.Clipboard.SetText(_entry.Command);
+                // Copy to clipboard for easy pasting
+                // Note: Actual command execution would need to be handled by the shell/terminal
+                // that the user is using. CmdPal extensions typically provide commands to
+                // the clipboard for the user to paste where needed.
+                try
+                {
+                    System.Windows.Clipboard.SetText(_entry.Command);
+                }
+                catch (System.Runtime.InteropServices.COMException)
+                {
+                    // Clipboard might be locked, but we still updated history
+                    // Continue without failing
+                }
                 
                 return CommandResult.Dismiss();
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error executing history command: {ex.Message}");
                 return CommandResult.KeepOpen();
             }
         }
@@ -162,8 +173,15 @@ namespace CmdPalHistoryExtension.CmdPal
                 System.Windows.Clipboard.SetText(_text);
                 return CommandResult.Dismiss();
             }
-            catch
+            catch (System.Runtime.InteropServices.COMException ex)
             {
+                // Clipboard is locked by another process
+                Console.WriteLine($"Clipboard access denied: {ex.Message}");
+                return CommandResult.KeepOpen();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error copying to clipboard: {ex.Message}");
                 return CommandResult.KeepOpen();
             }
         }

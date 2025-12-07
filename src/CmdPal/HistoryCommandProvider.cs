@@ -41,8 +41,11 @@ namespace CmdPalHistoryExtension.CmdPal
 
         public override ICommandItem[] TopLevelCommands()
         {
-            // Create the main history browsing page
-            _historyPage = new HistoryListPage(_historyManager, _config);
+            // Lazy initialize the history page
+            if (_historyPage == null)
+            {
+                _historyPage = new HistoryListPage(_historyManager, _config);
+            }
             
             return new ICommandItem[]
             {
