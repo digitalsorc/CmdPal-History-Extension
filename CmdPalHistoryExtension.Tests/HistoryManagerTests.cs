@@ -160,14 +160,47 @@ namespace CmdPalHistoryExtension.Tests
 
         public void Dispose()
         {
+            // Step 1: Dispose the manager to release all database connections
             _historyManager?.Dispose();
-            if (File.Exists(_testDbPath))
+            
+            // Step 2: Small delay to ensure OS releases file locks
+            System.Threading.Thread.Sleep(100);
+            
+            // Step 3: Delete the temporary database files with retry logic
+            TryDeleteFile(_testDbPath);
+            TryDeleteFile(_testDbPath + "_limited");
+        }
+
+        private static void TryDeleteFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return;
+
+            int maxRetries = 3;
+            int delay = 50;
+            
+            for (int i = 0; i < maxRetries; i++)
             {
-                File.Delete(_testDbPath);
-            }
-            if (File.Exists(_testDbPath + "_limited"))
-            {
-                File.Delete(_testDbPath + "_limited");
+                try
+                {
+                    File.Delete(filePath);
+                    return;
+                }
+                catch (IOException) when (i < maxRetries - 1)
+                {
+                    System.Threading.Thread.Sleep(delay);
+                    delay *= 2; // Exponential backoff
+                }
+                catch (UnauthorizedAccessException) when (i < maxRetries - 1)
+                {
+                    System.Threading.Thread.Sleep(delay);
+                    delay *= 2; // Exponential backoff
+                }
+                catch
+                {
+                    // Ignore cleanup failures to prevent test failures
+                    return;
+                }
             }
         }
     }
