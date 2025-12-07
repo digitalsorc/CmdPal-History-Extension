@@ -241,6 +241,27 @@ namespace CmdPalHistoryExtension.Services
         }
 
         /// <summary>
+        /// Deletes a specific command by ID
+        /// </summary>
+        public void DeleteCommand(int id)
+        {
+            lock (_lock)
+            {
+                try
+                {
+                    using var cmd = _connection!.CreateCommand();
+                    cmd.CommandText = "DELETE FROM history WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting command: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
         /// Clears all history
         /// </summary>
         public void ClearHistory()

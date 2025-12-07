@@ -1,10 +1,10 @@
-# CmdPal History Extension for PowerToys
+# CmdPal History Extension
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A powerful PowerToys CmdPal extension that brings terminal-style command history browsing to Windows. Navigate through your previous commands using keyboard shortcuts, search your history, and boost your productivity.
+A powerful CmdPal (Command Palette) extension that brings terminal-style command history browsing to Windows. Navigate through your previous commands using keyboard shortcuts, search your history, and boost your productivity.
 
 ## ✨ Features
 
@@ -21,12 +21,12 @@ A powerful PowerToys CmdPal extension that brings terminal-style command history
 ### Installation
 
 1. **Download** the latest release: `CmdPalHistoryExtension-v1.0.0.zip`
-2. **Extract** to PowerToys plugins directory:
+2. **Extract** to CmdPal extensions directory:
    ```
-   %LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\CmdPalHistoryExtension\
+   %LOCALAPPDATA%\Microsoft\CmdPal\Extensions\CmdPalHistoryExtension\
    ```
-3. **Restart** PowerToys
-4. **Try it**: Press `Alt+Space`, type `history`
+3. **Restart** CmdPal
+4. **Try it**: Open CmdPal and type `history`
 
 📖 **Detailed instructions**: See [docs/INSTALL.md](docs/INSTALL.md)
 
@@ -41,9 +41,9 @@ A powerful PowerToys CmdPal extension that brings terminal-style command history
 
 **Example:**
 ```
-1. Press Alt+Space (PowerToys Run)
+1. Open CmdPal (default: Win+R or configured hotkey)
 2. Type 'history'
-3. Press Up arrow to browse
+3. Browse through your command history
 4. Press Enter to execute
 ```
 
@@ -135,7 +135,7 @@ MIT License - see LICENSE file for details
 
 ## 🙏 Acknowledgments
 
-- PowerToys team for the plugin framework
+- CmdPal team for the extension framework
 - SQLite for the database engine
 - .NET team for the runtime
 
@@ -156,6 +156,6 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Made with ❤️ for PowerToys users**
+**Made with ❤️ for CmdPal users**
 
 *Boost your productivity with command history at your fingertips!*

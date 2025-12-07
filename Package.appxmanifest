@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap uap3 com desktop">
+
+  <Identity
+    Name="CmdPalHistoryExtension"
+    Publisher="CN=CmdPalHistoryExtension"
+    Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>CmdPal History Extension</DisplayName>
+    <PublisherDisplayName>CmdPal History Extension Team</PublisherDisplayName>
+    <Logo>Images\icon.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-US" />
+  </Resources>
+
+  <Applications>
+    <Application Id="CmdPalHistoryExtension" Executable="CmdPalHistoryExtension.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="CmdPal History Extension"
+        Description="Browse and search through your command history"
+        BackgroundColor="transparent"
+        Square150x150Logo="Images\icon.png"
+        Square44x44Logo="Images\icon.png">
+      </uap:VisualElements>
+
+      <Extensions>
+        <!-- COM Server Registration -->
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="CmdPalHistoryExtension.exe" Arguments="-RegisterProcessAsComServer" DisplayName="CmdPal History Extension">
+              <com:Class Id="12345678-1234-1234-1234-123456789012" DisplayName="History Command Provider" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+
+        <!-- CmdPal Extension Registration -->
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="com.microsoft.commandpalette"
+                             Id="CmdPalHistoryExtension"
+                             PublicFolder="Public"
+                             DisplayName="Command History"
+                             Description="Browse and search your command history">
+            <uap3:Properties>
+              <CmdPalProvider>
+                <Activation>
+                  <CreateInstance ClassId="12345678-1234-1234-1234-123456789012" />
+                </Activation>
+                <SupportedInterfaces>
+                  <Commands />
+                </SupportedInterfaces>
+              </CmdPalProvider>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <rescap:Capability Name="runFullTrust" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" />
+  </Capabilities>
+</Package>
