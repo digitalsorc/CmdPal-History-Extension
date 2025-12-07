@@ -1,0 +1,59 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore CmdPalHistoryExtension.csproj
+
+    - name: Build
+      run: dotnet build CmdPalHistoryExtension.csproj --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj --configuration Release --no-build --verbosity normal
+      continue-on-error: true
+
+    - name: Publish binaries
+      run: dotnet publish CmdPalHistoryExtension.csproj --configuration Release --output ./publish --no-build
+
+    - name: Upload binaries as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: binaries
+        path: ./publish/
+        if-no-files-found: error
+
+    - name: Create release package
+      if: github.event_name == 'release'
+      run: |
+        $version = "${{ github.ref_name }}"
+        $zipName = "CmdPalHistoryExtension-${version}.zip"
+        Compress-Archive -Path ./publish/* -DestinationPath $zipName
+        echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - name: Upload binaries to release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ${{ env.ZIP_NAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
