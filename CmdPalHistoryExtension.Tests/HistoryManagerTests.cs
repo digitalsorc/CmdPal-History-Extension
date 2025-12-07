@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using Xunit;
 using CmdPalHistoryExtension.Services;
 using CmdPalHistoryExtension.Models;
@@ -8,6 +9,11 @@ namespace CmdPalHistoryExtension.Tests
 {
     public class HistoryManagerTests : IDisposable
     {
+        private const int DisposalDelayMs = 100;
+        private const int MaxRetries = 3;
+        private const int InitialRetryDelayMs = 50;
+        private const string LimitedDbSuffix = "_limited";
+        
         private readonly string _testDbPath;
         private readonly HistoryManager _historyManager;
 
@@ -53,9 +59,9 @@ namespace CmdPalHistoryExtension.Tests
         {
             // Arrange
             _historyManager.AddCommand("first");
-            System.Threading.Thread.Sleep(10); // Ensure different timestamps
+            Thread.Sleep(10); // Ensure different timestamps
             _historyManager.AddCommand("second");
-            System.Threading.Thread.Sleep(10);
+            Thread.Sleep(10);
             _historyManager.AddCommand("third");
 
             // Act
@@ -132,7 +138,7 @@ namespace CmdPalHistoryExtension.Tests
         public void AddCommand_WithMaxEntries_ShouldRemoveOldestEntries()
         {
             // Arrange
-            using var limitedManager = new HistoryManager(_testDbPath + "_limited", maxEntries: 3);
+            using var limitedManager = new HistoryManager(_testDbPath + LimitedDbSuffix, maxEntries: 3);
 
             // Act
             limitedManager.AddCommand("cmd1");
@@ -160,14 +166,46 @@ namespace CmdPalHistoryExtension.Tests
 
         public void Dispose()
         {
+            // Step 1: Dispose the manager to release all database connections
             _historyManager?.Dispose();
-            if (File.Exists(_testDbPath))
+            
+            // Step 2: Small delay to ensure OS releases file locks
+            Thread.Sleep(DisposalDelayMs);
+            
+            // Step 3: Delete the temporary database files with retry logic
+            TryDeleteFile(_testDbPath);
+            TryDeleteFile(_testDbPath + LimitedDbSuffix);
+        }
+
+        private static void TryDeleteFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return;
+
+            int delay = InitialRetryDelayMs;
+            
+            for (int i = 0; i < MaxRetries; i++)
             {
-                File.Delete(_testDbPath);
-            }
-            if (File.Exists(_testDbPath + "_limited"))
-            {
-                File.Delete(_testDbPath + "_limited");
+                try
+                {
+                    File.Delete(filePath);
+                    return;
+                }
+                catch (IOException) when (i < MaxRetries - 1)
+                {
+                    Thread.Sleep(delay);
+                    delay *= 2; // Exponential backoff
+                }
+                catch (UnauthorizedAccessException) when (i < MaxRetries - 1)
+                {
+                    Thread.Sleep(delay);
+                    delay *= 2; // Exponential backoff
+                }
+                catch
+                {
+                    // Ignore cleanup failures to prevent test failures
+                    return;
+                }
             }
         }
     }

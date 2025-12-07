@@ -81,7 +81,7 @@ Write-Success "Build completed"
 # Run tests if not skipped
 if (-not $SkipTests) {
     Write-Info "Running tests..."
-    dotnet test CmdPalHistoryExtension.Tests.csproj --configuration $Configuration --no-build --verbosity normal
+    dotnet test CmdPalHistoryExtension.Tests/CmdPalHistoryExtension.Tests.csproj --configuration $Configuration --no-build --verbosity normal
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Tests failed"
         exit $LASTEXITCODE
